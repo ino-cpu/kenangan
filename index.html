@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galery Angkatan 2026 - SMKN 2 Kota Serang</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0b0c10;
+            color: #c5c6c7;
+            padding-bottom: 100px;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0c10;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00f2fe;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #00f2fe;
+        }
+        
+        /* Top Navigation Bar */
+        .top-navbar {
+            position: sticky;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(11, 12, 16, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 242, 254, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            z-index: 1500;
+        }
+        .menu-trigger {
+            background: none;
+            border: none;
+            color: #00f2fe;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 0 0 8px rgba(0, 242, 254, 0.5);
+        }
+
+        .hero-banner {
+            text-align: center;
+            padding: 40px 20px 30px 20px;
+            background: linear-gradient(180deg, rgba(0, 242, 254, 0.04) 0%, rgba(11, 12, 16, 0) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+        }
+        .hero-banner h1 {
+            font-size: 26px;
+            font-weight: 800;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(0, 242, 254, 0.65);
+            margin-bottom: 6px;
+            line-height: 1.2;
+        }
+        .hero-banner p {
+            font-size: 14px;
+            color: #66fcf1;
+            letter-spacing: 1.5px;
+            font-weight: 500;
+            text-transform: uppercase;
+            text-shadow: 0 0 8px rgba(102, 252, 241, 0.4);
+        }
+
+        .app-view {
+            display: none;
+        }
+        .app-view.view-active {
+            display: block;
+        }
+
+        /* Gallery Container Layout */
+        .gallery-container {
+            max-width: 1200px;
+            margin: 10px auto 0 auto;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+        @media (min-width: 768px) {
+            .gallery-container {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 20px;
+                padding: 24px;
+            }
+        }
+        .photo-card {
+            background: #1f2833;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            aspect-ratio: 1 / 1;
+        }
+        .photo-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 242, 254, 0.25);
+            border-color: rgba(0, 242, 254, 0.3);
+        }
+        .photo-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            background-color: #111;
+        }
+
+        /* Play Store UI Simulation Page */
+        .playstore-container {
+            max-width: 500px;
+            margin: 25px auto;
+            padding: 20px;
+            background: #121212;
+            border-radius: 16px;
+            border: 1px solid #222;
+        }
+        .ps-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .ps-app-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .ps-app-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .ps-app-info h2 {
+            font-size: 19px;
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .ps-developer {
+            font-size: 13px;
+            color: #00f2fe;
+            font-weight: 500;
+        }
+        .ps-stats {
+            display: flex;
+            justify-content: space-between;
+            text-align: center;
+            padding: 15px 0;
+            border-top: 1px solid #222;
+            border-bottom: 1px solid #222;
+            margin-bottom: 25px;
+        }
+        .ps-stat-box {
+            flex: 1;
+        }
+        .ps-stat-val {
+            font-size: 15px;
+            color: #fff;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        .ps-stat-lbl {
+            font-size: 11px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        /* Seksi Deskripsi Aplikasi */
+        .ps-description-box {
+            font-size: 13px;
+            color: #a4a7ab;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            padding: 0 4px;
+            text-align: left;
+        }
+        .ps-description-box h3 {
+            font-size: 14px;
+            color: #fff;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .ps-btn-download {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            background: #01875f;
+            color: #fff;
+            text-align: center;
+            padding: 12px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+        }
+        .ps-btn-download.loading {
+            background: #1f1f1f;
+            color: #01875f;
+            border: 1px solid #333;
+            cursor: not-allowed;
+        }
+        .ps-spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #333;
+            border-top: 2px solid #01875f;
+            border-radius: 50%;
+            animation: psRotate 0.8s linear infinite;
+        }
+        @keyframes psRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Full Screen Content Wrapper */
+        .fullscreen-content-page {
+            max-width: 500px;
+            margin: 30px auto;
+            padding: 35px 24px;
+            background: #11141a;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 242, 254, 0.15);
+            text-align: center;
+        }
+        .fs-page-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+        }
+        .fs-page-title {
+            font-size: 20px;
+            color: #fff;
+            font-weight: 800;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #1f242d;
+            padding-bottom: 12px;
+        }
+        .fs-page-body {
+            font-size: 14px;
+            color: #a4a7ab;
+            line-height: 1.7;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .fs-page-body p {
+            margin-bottom: 16px;
+        }
+        
+        .contact-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        .contact-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+        .btn-wa { background: #25d366; color: #fff; }
+        .btn-email { background: #ea4335; color: #fff; }
+        .fs-btn-action { display: inline-flex; align-items: center; justify-content: center; background: transparent; color: #8f9499; padding: 10px 24px; border-radius: 20px; font-size: 12px; font-weight: 700; border: 1px solid #222; cursor: pointer; }
+
+        /* Lightbox */
+        .lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 12, 16, 0.95); z-index: 2000; display: none; justify-content: center; align-items: center; flex-direction: column; padding: 20px; backdrop-filter: blur(8px); }
+        .lightbox.active { display: flex; }
+        .lightbox-content { max-width: 95%; max-height: 75vh; border-radius: 8px; object-fit: contain; }
+        .lightbox-actions { margin-top: 25px; display: flex; gap: 15px; }
+        .btn { padding: 10px 24px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; border: none; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: linear-gradient(45deg, #00f2fe, #4facfe); color: #0b0c10; }
+        .btn-close { background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+
+        /* Fixed Bottom Navigation Bar */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: rgba(31, 40, 51, 0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(102, 252, 241, 0.15); display: flex; justify-content: space-around; align-items: center; z-index: 1000; padding: 0 10px; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #8f9499; background: none; border: none; cursor: pointer; flex: 1; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .nav-item.active { color: #00f2fe; text-shadow: 0 0 8px rgba(0, 242, 254, 0.4); }
+        .nav-icon { font-size: 18px; margin-bottom: 4px; }
+
+        /* Sidebar Dynamic Drawer Styling */
+        .sidebar { position: fixed; top: 0; left: -290px; width: 290px; height: 100%; background: #0f1115; border-right: 1px solid rgba(102, 252, 241, 0.15); z-index: 3000; transition: left 0.3s cubic-bezier(0.1, 0.9, 0.2, 1); padding: 25px 20px; display: flex; flex-direction: column; }
+        .sidebar.open { left: 0; }
+        .sidebar-header { font-size: 11px; font-weight: 800; color: rgba(102, 252, 241, 0.6); padding-bottom: 8px; margin-bottom: 12px; text-transform: uppercase; }
+        .sidebar-menu-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .sidebar-item { width: 100%; padding: 12px 16px; background: rgba(31, 40, 51, 0.3); border: 1px solid rgba(102, 252, 241, 0.15); border-radius: 10px; color: #a4a7ab; font-size: 12px; font-weight: 600; text-align: center; cursor: pointer; text-transform: uppercase; }
+        .sidebar-item:hover, .sidebar-item.active { color: #00f2fe; border-color: #00f2fe; box-shadow: 0 0 10px rgba(0, 242, 254, 0.3); }
+        .sidebar-divider { height: 1px; background: rgba(102, 252, 241, 0.1); margin: 20px 0; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); z-index: 2500; display: none; }
+        .sidebar-overlay.active { display: block; }
+        .brand-watermark { position: fixed; bottom: 80px; right: 12px; font-size: 10px; color: rgba(102, 252, 241, 0.35); pointer-events: none; z-index: 999; text-transform: lowercase; font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <div class="top-navbar">
+        <button class="menu-trigger" onclick="openSidebar()">☰</button>
+    </div>
+
+    <div class="hero-banner">
+        <h1>GALERY ANGKATAN</h1>
+        <p>SMKN 2 KOTA SERANG 2026</p>
+    </div>
+
+    <div id="viewGallery" class="app-view view-active">
+        <div class="gallery-container" id="galleryGrid"></div>
+    </div>
+
+    <div id="viewPlayStore" class="app-view">
+        <div class="playstore-container">
+            <div class="ps-header">
+                <div class="ps-app-icon">
+                    <img src="https://files.catbox.moe/ca55nj.png" alt="Memori Logo">
+                </div>
+                <div class="ps-app-info">
+                    <h2>Memori</h2>
+                    <div class="ps-developer">Ino.digital</div>
+                </div>
+            </div>
+            <div class="ps-stats">
+                <div class="ps-stat-box" style="border-right: 1px solid rgba(255,255,255,0.05);">
+                    <div class="ps-stat-val">5.0 ★</div>
+                    <div class="ps-stat-lbl">450 Ulasan</div>
+                </div>
+                <div class="ps-stat-box" style="border-right: 1px solid rgba(255,255,255,0.05);">
+                    <div class="ps-stat-val">4.8 MB</div>
+                    <div class="ps-stat-lbl">Ukuran File</div>
+                </div>
+                <div class="ps-stat-box">
+                    <div class="ps-stat-val">450+</div>
+                    <div class="ps-stat-lbl">Download</div>
+                </div>
+            </div>
+
+            <div class="ps-description-box">
+                <h3>Tentang Aplikasi Ini</h3>
+                <p>Aplikasi resmi peluncur arsip digital <strong>Memori</strong> persembahan khusus dari <strong>Ino.digital</strong>. Simpan seluruh lembar foto kenangan beresolusi tinggi milik alumni SMKN 2 Kota Serang Semua Jurusan Batch 2026 langsung ke penyimpanan ponsel kalian dengan aman, tanpa kompresi pecah, dan bebas iklan.</p>
+            </div>
+
+            <button id="psDownloadBtn" class="ps-btn-download" onclick="startPsDownloadSimulation()">
+                <div class="ps-spinner" id="psBtnSpinner"></div>
+                <span id="psBtnText">Download Aplikasi Resmi</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="viewAbout" class="app-view">
+        <div class="fullscreen-content-page">
+            <div class="fs-page-icon">📱</div>
+            <div class="fs-page-title">Tentang Aplikasi</div>
+            <div class="fs-page-body">
+                <p><strong>Aplikasi ini dibuat untuk tersimpan abadi di ponsel kalian.</strong></p>
+                <p>Setiap lembar foto, tawa, dan cerita yang terukir selama masa sekolah tersimpan rapat di sini. Waktu boleh terus berjalan dan kita akan melangkah ke jalan masing-masing, namun memori di tempat ini tidak akan pernah pudar.</p>
+                <p>Gunakan aplikasi galeri kustom persembahan dari <strong>Ino.digital</strong> ini untuk membuka kembali gerbang masa lalu kapan pun kalian merindukan masa-masa abu-abu putih di SMKN 2 Kota Serang.</p>
+            </div>
+            <button class="fs-btn-action" onclick="backToGallery()">Kembali Ke Galeri</button>
+        </div>
+    </div>
+
+    <div id="viewContact" class="app-view">
+        <div class="fullscreen-content-page">
+            <div class="fs-page-icon">💬</div>
+            <div class="fs-page-title">Hubungi Developer</div>
+            <div class="fs-page-body">
+                <p>Mau buat website portofolio kelas, sistem voucher, atau aplikasi kustom kelas eksklusif milikmu sendiri bersama brand <strong>Ino.digital</strong>?</p>
+            </div>
+            <div class="contact-grid">
+                <a href="https://t.me/manajerIno" target="_blank" class="contact-btn btn-wa">Chat WhatsApp / Telegram</a>
+                <a href="mailto:admin@ino.digital" class="contact-btn btn-email">Kirim Email Resmi</a>
+            </div>
+            <button class="fs-btn-action" onclick="backToGallery()">Kembali Ke Galeri</button>
+        </div>
+    </div>
+
+    <div class="lightbox" id="lightbox">
+        <img src="" alt="Preview" class="lightbox-content" id="lightboxImg">
+        <div class="lightbox-actions">
+            <button class="btn btn-close" onclick="closeLightbox()">Kembali</button>
+            <a href="#" class="btn btn-primary" id="downloadBtn" download target="_blank">Unduh Foto</a>
+        </div>
+    </div>
+
+    <div class="sidebar" id="sidebarMenu">
+        <div class="sidebar-top" style="overflow-y: auto; flex-grow: 1;">
+            <div class="sidebar-header">Daftar Katalog Album</div>
+            <div class="sidebar-menu-list" id="sidebarList"></div>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-header">Informasi Aplikasi</div>
+            <div class="sidebar-menu-list">
+                <button class="sidebar-item" onclick="switchView('viewAbout')">Tentang Aplikasi</button>
+                <button class="sidebar-item" onclick="switchView('viewContact')">Hubungi Developer</button>
+            </div>
+        </div>
+    </div>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <div class="brand-watermark">ino.digital</div>
+
+    <div class="bottom-nav">
+        <button class="nav-item active" id="navHome" onclick="switchCategory('SEMUA FOTO', this)">
+            <div class="nav-icon">✨</div>
+            <span>Semua</span>
+        </button>
+        <button class="nav-item" id="navAngkatan" onclick="switchCategory('FOTO 6D', this)">
+            <div class="nav-icon">👥</div>
+            <span>6D</span>
+        </button>
+        <button class="nav-item" onclick="openSidebar()">
+            <div class="nav-icon">📁</div>
+            <span>Folder</span>
+        </button>
+        <button class="nav-item" id="navApp" onclick="handleAppViewClick(this)">
+            <div class="nav-icon">🤖</div>
+            <span>Aplikasi</span>
+        </button>
+    </div>
+
+    <script>
+        // ===================================================================
+        // 📥 SELURUH DATA ID FOTO 6D ASLI SUDAH TERTANAM SEMPURNA DI SINI
+        // ===================================================================
+        const DATA_FOTO_ANGKATAN = [
+          { "id": "1X8AFVGfwmNGh6HrRiJeqiwjK_yCRAUzQ", "kategori": "FOTO 6D" },
+          { "id": "1avryVcYaxr8FailQPmiMK7_iNLSdmHh7", "kategori": "FOTO 6D" },
+          { "id": "1w0c8EgG2CIwJOcadjynYO_aTVewhCiEC", "kategori": "FOTO 6D" },
+          { "id": "1o2_B7Hy_QIkEpMjiputlTQWIXLx_j3lT", "kategori": "FOTO 6D" },
+          { "id": "1ub4p8PbS7qm3-wbsXBS_1pUvrKkkK7D5", "kategori": "FOTO 6D" },
+          { "id": "1-a-BErCLWlWliWNyxwZl-fQikvI4eDtB", "kategori": "FOTO 6D" },
+          { "id": "17K4747XmNcqjG1BZAEI36rWjPRa7zPTv", "kategori": "FOTO 6D" },
+          { "id": "1OIX1eLSZEM5cYNWFktk1Av5ZloENpWAc", "kategori": "FOTO 6D" },
+          { "id": "15QBNK3Ns6igrfo5YFOQAtZWsbUuMrTQD", "kategori": "FOTO 6D" },
+          { "id": "1IjOGTmUkOKSCsF6oXbMkPUBxu-zA-NTf", "kategori": "FOTO 6D" },
+          { "id": "1490tm5-fsiLwxAD7KGP8KC4WZUrZoyAO", "kategori": "FOTO 6D" },
+          { "id": "1mn2rcEtLXdPbmzcVNXbaPQpo8oZin6BM", "kategori": "FOTO 6D" },
+          { "id": "1nuPMav4BhfJHJ-HFiSVrXf6EE7wEi12D", "kategori": "FOTO 6D" },
+          { "id": "1-eIrgSOo4gjvfniyR2v6XA1P31tB-UT6", "kategori": "FOTO 6D" },
+          { "id": "1VD9PPNWQgRe5-UY1A5OFH6aUgaVJ5JCj", "kategori": "FOTO 6D" },
+          { "id": "1zr2xwOM2TBBNbcaBSSRuPgOFC20s7cwQ", "kategori": "FOTO 6D" },
+          { "id": "1tC7oxw_mMQ0PV8TvmORV0YW-mZzrX6X9", "kategori": "FOTO 6D" },
+          { "id": "12eUnGiQ6M3N9HqsK31tF0FX1Ke-L03Sa", "kategori": "FOTO 6D" },
+          { "id": "1x69uj7oufylsVKUAhuGR3kt9oqNq0BZq", "kategori": "FOTO 6D" },
+          { "id": "167jTCMizuWFpYWuxitQ7_1n99sW93-qU", "kategori": "FOTO 6D" },
+          { "id": "1zx2eQWjnunogcLYxIUqZ0ldMWX2BSUIp", "kategori": "FOTO 6D" },
+          { "id": "1kjNy8anZeketQCRxJm8lFKvsgcRkHSmr", "kategori": "FOTO 6D" },
+          { "id": "1gA7YO2vxXwg78vvk4BNzhVJP6wSGeFjs", "kategori": "FOTO 6D" },
+          { "id": "13ex-bKTJV3_ao9wMbHKlEW_oTg3V3ehc", "kategori": "FOTO 6D" },
+          { "id": "1a42urzO7z2LOeBDyVQdnVw2Xec9VBFtI", "kategori": "FOTO 6D" },
+          { "id": "1CPmdgTZwSw86ro54iXarsQytwgfAin6U", "kategori": "FOTO 6D" },
+          { "id": "1nUP-l8uvLC4-s5oFBcstE0-k6PuUGSof", "kategori": "FOTO 6D" },
+          { "id": "1mSKondpQzKqBUwbavRg46wy8SXKt0KNC", "kategori": "FOTO 6D" },
+          { "id": "1NUY2H3iA2pbaZle9gtWWz9I6dcl5BfDk", "kategori": "FOTO 6D" },
+          { "id": "1HI--En_45KvxNWxHGsisi5BzvQXvDJ0X", "kategori": "FOTO 6D" },
+          { "id": "1XZJTLh9ARdUH9uk0MXuMsGtsVM3P4mXb", "kategori": "FOTO 6D" },
+          { "id": "1VRvAHYXxaHEkURi-OINpAdN4zluKzlzC", "kategori": "FOTO 6D" },
+          { "id": "1R6ZWtuRiVUBq2bzP4O_S1QxleK0VGs8M", "kategori": "FOTO 6D" },
+          { "id": "1OfazXTxttGsq86P8QM8ZopylHlsKHtJs", "kategori": "FOTO 6D" },
+          { "id": "1BcLVfzDRKsfvePh1xTr4D2C1vSKOyCAv", "kategori": "FOTO 6D" },
+          { "id": "1uzXjReLQVKRngpsRcURW8TTKGDv3hVl5", "kategori": "FOTO 6D" },
+          { "id": "1VLQTtexSjhINfSVOni7ILR-Qf-KvNAEE", "kategori": "FOTO 6D" },
+          { "id": "1x8yNilYt4gjmzyyCcmayqYr_-KmEnasL", "kategori": "FOTO 6D" },
+          { "id": "13wlCl9MRgGb4qitSrke5791EuNDEi02o", "kategori": "FOTO 6D" },
+          { "id": "1AYDWOBXna5Z-qxQwYhYE7sLrECCTM10c", "kategori": "FOTO 6D" },
+          { "id": "12esqFwYh1ChQZiUqII5k0Yq_RuRpM1eA", "kategori": "FOTO 6D" },
+          { "id": "19-OJNVfGYwXjjvulGyiPEUwtqm94PeNL", "kategori": "FOTO 6D" },
+          { "id": "1FExlOMqgRQSPxYOYnUYZGyDdjjHk2dFC", "kategori": "FOTO 6D" },
+          { "id": "17MTPZKpTBHAJEE-6QyX1vs9MwGUQKnee", "kategori": "FOTO 6D" },
+          { "id": "1mkYfF547jetycjPVRGjmkT7OQz3jdKkq", "kategori": "FOTO 6D" },
+          { "id": "1pj2jpn6trKHT7SkuxV17FsakhUqv__ep", "kategori": "FOTO 6D" },
+          { "id": "18pD7sDWsL7mYkCeQXTmZvupFbCfR2du3", "kategori": "FOTO 6D" },
+          { "id": "1vyOPeSmHFz-NyLan4JYbGtoBuUfjsB5z", "kategori": "FOTO 6D" },
+          { "id": "1jyshHhScHOtg-1yoZL_Egm_fjG3QWpqu", "kategori": "FOTO 6D" },
+          { "id": "1QO4aj5VbzdAiHeVIX3afTfhiKuNpKd4H", "kategori": "FOTO 6D" },
+          { "id": "1bAFfq20vJbrd-Yx43dS2siVYysrcBfKL", "kategori": "FOTO 6D" },
+          { "id": "1SoVVfEJvdMAq2VfHIerG60DTpkTkqQ0Q", "kategori": "FOTO 6D" },
+          { "id": "18k5G0E-3B9bjqTVDuBpwlnkpFChLAtBL", "kategori": "FOTO 6D" },
+          { "id": "1F0kmQZ0QK0rIu2raCblQodwBNr_7ssR7", "kategori": "FOTO 6D" },
+          { "id": "12jyTGLiFU5Ost2LMeeBcZo06WXG0blmm", "kategori": "FOTO 6D" },
+          { "id": "1Vma7-2qIUcsFgFmq9-OWGKZnnNKE36nM", "kategori": "FOTO 6D" },
+          { "id": "1wfXTBmy6zA9tmJIW8_8k034ac2tVy4Vw", "kategori": "FOTO 6D" },
+          { "id": "1ZLOaJK9rMpQeCjWjhgHU9DMWxgUPCNgJ", "kategori": "FOTO 6D" },
+          { "id": "1GWDReYHRCfVyJnmdjVfZdcA1Vb-37VZN", "kategori": "FOTO 6D" },
+          { "id": "1iwMDwdtpnelDuDoRjJdJdC9ikC5ZQd-N", "kategori": "FOTO 6D" },
+          { "id": "1cAhqeivyXmYFjDZfpw3N7oz5vlEraob4", "kategori": "FOTO 6D" },
+          { "id": "1tHCgSrLyJe1aSGOsjfF5RZL3ffcXwtYu", "kategori": "FOTO 6D" },
+          { "id": "1EDY2y3pJcO2ChKT-3tLZDRUzELuyIRYq", "kategori": "FOTO 6D" },
+          { "id": "1fFHIa4b-xXwAC8MtR9gVshZnNtQtQGoI", "kategori": "FOTO 6D" },
+          { "id": "1oauehaO8SyA7AQM2W8JHr6yN7FftNwKb", "kategori": "FOTO 6D" },
+          { "id": "12-gYORSBYLnJ47Qouk3RXbTtevVGyepm", "kategori": "FOTO 6D" },
+          { "id": "1hIZjIJubtpgJqItoZeS4hTd6478zX8Qi", "kategori": "FOTO 6D" },
+          { "id": "1ADU7Qv0heez2lAG4vkdJ9zlb0Bjt1C7H", "kategori": "FOTO 6D" },
+          { "id": "1KEwTSgRkPi4EQtg0Uz4tXw_cjPwLDt-L", "kategori": "FOTO 6D" },
+          { "id": "1WNKqhgH7BoEkLB6RujgaChJFe18OIUvK", "kategori": "FOTO 6D" },
+          { "id": "1mvdcCa3zOQcShGaPsbt_MEGEo11kyrOB", "kategori": "FOTO 6D" },
+          { "id": "1zZnigVIsHS7CYYPfVoJnm-FRxhGoIpXx", "kategori": "FOTO 6D" },
+          { "id": "1tfrvVusWBRbSulXdrO_t332y4-4O_0L9", "kategori": "FOTO 6D" },
+          { "id": "1g3oJvjIjJrlMzHGgJNE6wOhcAjUyEQS8", "kategori": "FOTO 6D" },
+          { "id": "1w5ckkMbH1aok-lBMZfQWKH8tKWlYebce", "kategori": "FOTO 6D" },
+          { "id": "19hjG4V8EGGbX4xRw5vNixska7D-SBcgU", "kategori": "FOTO 6D" },
+          { "id": "1GZwfJpaVkPn7qN37SOAWWbYR5uXsR8gh", "kategori": "FOTO 6D" },
+          { "id": "1aFAtstNMYjH9snJq1jGaeZw64rjiN60x", "kategori": "FOTO 6D" },
+          { "id": "18B4eeDddBEF8xnwC50wQfwRMPqnLj6i1", "kategori": "FOTO 6D" },
+          { "id": "1ycxcvw97g0Ra60yCS2SgYsuNjNfSJmmC", "kategori": "FOTO 6D" },
+          { "id": "1tbXQ2gYxx_9NsXHOc4LFFpWY9XNO-RpD", "kategori": "FOTO 6D" },
+          { "id": "1FrZ57-bch0aFZVe1EP-OJMV8sW-hNQi7", "kategori": "FOTO 6D" },
+          { "id": "14V5th0bPtkGDu9SKgBmYv4ACMuVYiSjt", "kategori": "FOTO 6D" },
+          { "id": "1SgFfs4AfAO0_u-bMQLwPCv9s1feQUMq8", "kategori": "FOTO 6D" },
+          { "id": "11Lcr09mMz951By2SowJSQHGCsTubYZsl", "kategori": "FOTO 6D" },
+          { "id": "1b2sWIxwbh_sfEBqaR8fIfLFlaeJET0ik", "kategori": "FOTO 6D" },
+          { "id": "1JHjTbSXh99WaI5Wc9UY0isVngBANQ-oq", "kategori": "FOTO 6D" },
+          { "id": "1ehwE4usjEFxbCZVXqVkgeGeLxsKeOhuv", "kategori": "FOTO 6D" },
+          { "id": "1wFIJRYiNyF5KrCgjyRvSKQ1jrdcY6jCr", "kategori": "FOTO 6D" },
+          { "id": "1rbEVOeQqvJtQijYp0RfCJmqywZPo9SiL", "kategori": "FOTO 6D" },
+          { "id": "1BfZ2hdRrsGIxTSxQS4F9OzUOelTnJrHw", "kategori": "FOTO 6D" },
+          { "id": "1uM0YssgeVzChErTJGH8NK-dzYZDnYeeC", "kategori": "FOTO 6D" },
+          { "id": "1oPnzgBKRz7b_Jm746KJhS6oNOHcA8rLv", "kategori": "FOTO 6D" },
+          { "id": "15EEP0dKIhahlZPxpxV3HKVsPyuzJjGm4", "kategori": "FOTO 6D" },
+          { "id": "1wjUXx2nyZpbbJ2KX81LcgfKSlWmzMnVp", "kategori": "FOTO 6D" },
+          { "id": "1W5udH7hscUuE7tCoJdgdELcPV6zGGvBc", "kategori": "FOTO 6D" },
+          { "id": "1zp_bO4jb5mA170nTnttAG7AA7kRmpHTl", "kategori": "FOTO 6D" },
+          { "id": "1iRLJtXUTOA1AdRN231oQPas4o2kA-8XH", "kategori": "FOTO 6D" },
+          { "id": "1vL3kf5SYAjT0jw-auHrJyY4qofy8CMCo", "kategori": "FOTO 6D" },
+          { "id": "1tWo9XCUtJKxZtMvEd8w-p0mHrMKJWWBJ", "kategori": "FOTO 6D" },
+          { "id": "1u7J_375gMI1badkTuWtOf17orNj-Ky_3", "kategori": "FOTO 6D" },
+          { "id": "1O259w6Povqt4klD7RYIwO7cpISWMpOJ7", "kategori": "FOTO 6D" },
+          { "id": "1KWRZ7Vy-71G7cC3kCwGSTHcNxR17RCQ3", "kategori": "FOTO 6D" },
+          { "id": "1JoISt2GFeM9w1zAX6HgUbiMG0q1SJOSl", "kategori": "FOTO 6D" },
+          { "id": "1NPKk_iNhsatkainixrjcsm7Bj-sUconq", "kategori": "FOTO 6D" },
+          { "id": "1BQV2VZBwKtizweszqBW4QUVma2elzu4H", "kategori": "FOTO 6D" },
+          { "id": "12mGkTWBdcbbnyjXNanJNSm4O9_sKqGM-", "kategori": "FOTO 6D" },
+          { "id": "1Iqwcrlh97nD2MXVhJv2SHnSPvv-4ZowR", "kategori": "FOTO 6D" },
+          { "id": "1B2K-7ecnjyM5WXvFw_qHH2Y_YJV_ipPy", "kategori": "FOTO 6D" },
+          { "id": "1VNVmKSJIv2dFfaZwuHp45SafoigKRN-S", "kategori": "FOTO 6D" },
+          { "id": "12R2RrNLhlwZoDmelFuo2mjHMVLsVEK0q", "kategori": "FOTO 6D" },
+          { "id": "1w5dgR5kssVAoJu8he_rvYShc8RdSaJ-k", "kategori": "FOTO 6D" },
+          { "id": "1AH7NvjvqfwMsxfFdntHdFH982PJ07CX6", "kategori": "FOTO 6D" },
+          { "id": "1JC6k4wBthWszrZehSqmXwbZdCzv5mWeF", "kategori": "FOTO 6D" },
+          { "id": "1NIopT7XM82lRWXm-ysgPLLpmFbm0-v83", "kategori": "FOTO 6D" },
+          { "id": "1kw6m_JSZJ1JfPvBSRUh8etKEPO-4IP3_", "kategori": "FOTO 6D" },
+          { "id": "1zaadfOZGuZgFwL_h6SqNYvmuT_leHQrl", "kategori": "FOTO 6D" },
+          { "id": "1BUiG5vBIJOh_qTyrTEcKc9zWoS_s7fWb", "kategori": "FOTO 6D" },
+          { "id": "1jhDgtt2N2bPaKnmP6cy-pqN5j5I0sLSK", "kategori": "FOTO 6D" },
+          { "id": "1G-T8x3hMEyMz-jcvRktYS9WTGKxXVxSx", "kategori": "FOTO 6D" },
+          { "id": "1yft2Rsr24BwEXTRAJb5lZFo8QWYzLG-B", "kategori": "FOTO 6D" },
+          { "id": "1V0wy0TqsBv16am-8X93LRLH9rpg2fZtX", "kategori": "FOTO 6D" },
+          { "id": "1HJaO_jjuIJ5vd6vpb-Y9-wrylWHGnAbE", "kategori": "FOTO 6D" },
+          { "id": "1LRK8yJnqT5KiHHEKM2FR-DfbHxg6bVuy", "kategori": "FOTO 6D" },
+          { "id": "1Fy6c4SExFlS4uB8QF5OuZpkRNxXSv915", "kategori": "FOTO 6D" },
+          { "id": "1YWIyzAdIl14rBSe_dogUc7cNAZrXND86", "kategori": "FOTO 6D" },
+          { "id": "1T5IZEcG4mmwA_YtpK0nJKrUF77kkNclr", "kategori": "FOTO 6D" },
+          { "id": "1pMB8xx1Zk5eIWkosIk5Kwx10H2mvOYku", "kategori": "FOTO 6D" },
+          { "id": "1gDcin97Tfg9ulKFz7rjgFNluEmHbFAJe", "kategori": "FOTO 6D" },
+          { "id": "1dzUv1rULb3xoxgx8ge5BljaMQZNtHWfi", "kategori": "FOTO 6D" },
+          { "id": "1MYisIYb1vR69mMIUnm8hKJvY-5GxXHTa", "kategori": "FOTO 6D" },
+          { "id": "1cMlMLET6Td7qU92KBLj7t6w8oe1xUL7V", "kategori": "FOTO 6D" },
+          { "id": "1DSejh8dhe10VD4CD9dhs7HtnbDCUSgUq", "kategori": "FOTO 6D" },
+          { "id": "1GYI42uxLeQg4GrQh65W_707iKOMwNGzn", "kategori": "FOTO 6D" },
+          { "id": "1L_qWMTyVIhaLG6w2MsGPzkrfzGu8FzlQ", "kategori": "FOTO 6D" },
+          { "id": "1RO55lY0aH_ehSE5RsDlO0Hw3iQTX4tdc", "kategori": "FOTO 6D" },
+          { "id": "13MbBGPKZT6y4e7yYKmwJh7Ra4z75_Dzi", "kategori": "FOTO 6D" },
+          { "id": "1Ijyy6SHaXUXVElAF8BAlH4vqbKcWzpGV", "kategori": "FOTO 6D" },
+          { "id": "1haJ1fN8cwTOE_YL1GH96-i_8Pn0xWUsx", "kategori": "FOTO 6D" },
+          { "id": "1wpIuGyxzD3ieVCSg2fMEczhXRlPFEXWF", "kategori": "FOTO 6D" },
+          { "id": "1KobGBdWP21uRufR_p8JBpYwYx8puOav7", "kategori": "FOTO 6D" },
+          { "id": "1UjX742n1nOYnZDYZafYY2Grq61brr4qM", "kategori": "FOTO 6D" },
+          { "id": "1BkoqKLwiQbky8x71rFRtQf3OG3h0-por", "kategori": "FOTO 6D" },
+          { "id": "15R5CATKlyv1aspXW6hjGlumG9KuF3egv", "kategori": "FOTO 6D" },
+          { "id": "1iI-7ZbBvs0M1Wz5f4M4ElN30Q_xNj5q7", "kategori": "FOTO 6D" },
+          { "id": "16G-yguVqEfaOimYSvz3Hy_Hqh2gPKoIU", "kategori": "FOTO 6D" },
+          { "id": "1D0pSx2ugb74nJruu6XvCXiUQBW2jduE9", "kategori": "FOTO 6D" },
+          { "id": "1P1OlEVQXqmSBUq6SnZ5VxVa20b5w_NJR", "kategori": "FOTO 6D" },
+          { "id": "1mPIqQn_E_0f3qZnVemvseA1nGJXK_5tB", "kategori": "FOTO 6D" },
+          { "id": "1uzJXr6PDpaHizXstNPWiaEJSXCW_fCsV", "kategori": "FOTO 6D" },
+          { "id": "1oqQloaTIBTiurtL4IfirP3gKZsfs-N0d", "kategori": "FOTO 6D" },
+          { "id": "1uhI6kZkRLT6xcO8cHrZnTE8IKljq6CYg", "kategori": "FOTO 6D" },
+          { "id": "1v0S5WpnMeqi2DjAXjLj3gqFlsptSIm6-", "kategori": "FOTO 6D" },
+          { "id": "1a27FIXGy3EzK0MMHNvIOHW7Z2eNR_KRi", "kategori": "FOTO 6D" },
+          { "id": "1eS9R7PfKxFOvMH2UNsTUIfvvC-H7y5vQ", "kategori": "FOTO 6D" },
+          { "id": "1LaJ_EqBi2fxLAOP4k6RgI5wX1wNeIO1x", "kategori": "FOTO 6D" },
+          { "id": "1faz7Rqia4KHH_INGHedHwzvQpQJG-XDn", "kategori": "FOTO 6D" },
+          { "id": "1shl8JDb3zguXbEON9uPeJZNBGVg0oa-D", "kategori": "FOTO 6D" },
+          { "id": "1MKLa6nTd3tfIFpPMDjOQJyNF6pWarvCW", "kategori": "FOTO 6D" },
+          { "id": "1afacLndq2cPiszLOB6rqxoRglrLBdqws", "kategori": "FOTO 6D" },
+          { "id": "1fWABKZ6Zf11RyWbTM7It5H5Z9-4zYEKR", "kategori": "FOTO 6D" },
+          { "id": "12aw0nkbGNPZ27ehBKy8Py2wuAnKCRi93", "kategori": "FOTO 6D" },
+          { "id": "1ER6mj9OuFV3j9tcJzBkKRQ12OPkZBKnQ", "kategori": "FOTO 6D" },
+          { "id": "1ntMuLnftbDHsPMYXl8PQAKvgBGGUqMRn", "kategori": "FOTO 6D" },
+          { "id": "1oTMqGxpJFhlYkKQ010_MnluaGJksmBkX", "kategori": "FOTO 6D" },
+          { "id": "1nKWwhDpjbPp9PijZi8JibAGxOXNTFts0", "kategori": "FOTO 6D" },
+          { "id": "1BlSVhrgCsLdyMz4YB5O17dsCEpJlehAE", "kategori": "FOTO 6D" },
+          { "id": "1ptr91YkY44ljJD5IwJSI_sdc_AC72sE3", "kategori": "FOTO 6D" },
+          { "id": "1WEFqUakm5N0QTr98yIHsD-cUlPbl0OoG", "kategori": "FOTO 6D" },
+          { "id": "1SwTzNtRQM2WGPF9Vqh-ndmlTdm9Ka_rv", "kategori": "FOTO 6D" },
+          { "id": "1vKfx7iQNSic0OWn6WMDszkM64zYbCePD", "kategori": "FOTO 6D" },
+          { "id": "1-03oKkq6lN9OIkPG9zY7BLBT5Qq_PjT-", "kategori": "FOTO 6D" },
+          { "id": "16BSHSWivUSz29ZnQCwx2z7iCbWC_p6ow", "kategori": "FOTO 6D" },
+          { "id": "1j_pm1tXyNbcnAgABqh-i-jxmVnlCNYnR", "kategori": "FOTO 6D" },
+          { "id": "1vTDT3jn01PpnYHFvt042g_lgnGJLvZR-", "kategori": "FOTO 6D" },
+          { "id": "1ISgmEaonaeW18EUVw8lPCfgNfclR-t8t", "kategori": "FOTO 6D" },
+          { "id": "1-jJMX4-p370mvYG1P9sZZT4G9YmhtW5A", "kategori": "FOTO 6D" },
+          { "id": "11aij6ZnCaF0j0qEYqVHSOY9EmDzzHekX", "kategori": "FOTO 6D" },
+          { "id": "1CaInTSMKHoEeB1jvr-I_c8aq9eztbk69", "kategori": "FOTO 6D" },
+          { "id": "1l0i6XbnY4ESaVviSOIeJuN3NzOAZ1He-", "kategori": "FOTO 6D" },
+          { "id": "1a-ehE7S65f7KT4dcVW7XKWEvw4A5O0nM", "kategori": "FOTO 6D" },
+          { "id": "1SLBAMF2OMiG3cUlGczbdHfKCA6DX5A63", "kategori": "FOTO 6D" },
+          { "id": "15ag9xPeGH5aacifCGTKM82VEbUp6zfcb", "kategori": "FOTO 6D" },
+          { "id": "12FEMunvt7ENOPrqBRfEfV9G1zUXR76Gz", "kategori": "FOTO 6D" },
+          { "id": "1U5kC8e6NhQFMfeYHR10AGLUkNmgKXSiQ", "kategori": "FOTO 6D" },
+          { "id": "1OG-SpKk8R9xl1XpX4jyEJrN7XmeIfUro", "kategori": "FOTO 6D" },
+          { "id": "17bdmZUWPgLpM-dSLZ2gjk5EB7-BCSEwk", "kategori": "FOTO 6D" },
+          { "id": "1PMLQIOl55zHVOpHT9kC2PQIM8qUla4h2", "kategori": "FOTO 6D" },
+          { "id": "1zm4tjXQZYmI3QM1Uh6R4fUvuBQOKbngi", "kategori": "FOTO 6D" },
+          { "id": "10cpc2ecSR4jXkDjkq1dwkaWk1HEpbtDX", "kategori": "FOTO 6D" },
+          { "id": "1OdkEFs5eoOAB7wTWgCWSldYsDEYMGqtP", "kategori": "FOTO 6D" },
+          { "id": "1HBUBmlVtA96FIBL30VFYTmXUFcA6KBEI", "kategori": "FOTO 6D" }
+        ];
+
+        let subFolders = {};
+        let isDownloading = false;
+        const galleryGrid = document.getElementById('galleryGrid');
+        const sidebarList = document.getElementById('sidebarList');
+
+        function initLocalGallery() {
+            subFolders["SEMUA FOTO"] = [];
+            
+            DATA_FOTO_ANGKATAN.forEach(item => {
+                const imgUrl = `https://drive.google.com/thumbnail?id=${item.id}&sz=w1000`;
+                subFolders["SEMUA FOTO"].push(imgUrl);
+                
+                if (!subFolders[item.kategori]) subFolders[item.kategori] = [];
+                subFolders[item.kategori].push(imgUrl);
+            });
+
+            buildSidebarMenu();
+            renderCategoryGrid("SEMUA FOTO");
+        }
+
+        function buildSidebarMenu() {
+            sidebarList.innerHTML = '';
+            Object.keys(subFolders).forEach(folderName => {
+                if (subFolders[folderName].length === 0) return;
+                const btn = document.createElement('button');
+                btn.className = "sidebar-item";
+                btn.innerHTML = `<span>${folderName}</span>`;
+                btn.onclick = () => {
+                    resetActiveNav();
+                    if(folderName === "SEMUA FOTO") document.getElementById('navHome').classList.add('active');
+                    else if(folderName === "FOTO 6D") document.getElementById('navAngkatan').classList.add('active');
+                    switchView('viewGallery');
+                    renderCategoryGrid(folderName);
+                };
+                sidebarList.appendChild(btn);
+            });
+        }
+
+        function renderCategoryGrid(folderName) {
+            galleryGrid.innerHTML = '';
+            const photos = subFolders[folderName] || [];
+            photos.forEach(url => {
+                const card = document.createElement('div');
+                card.className = 'photo-card';
+                card.onclick = () => openLightbox(url);
+                card.innerHTML = `<img src="${url}" alt="Album" loading="lazy">`;
+                galleryGrid.appendChild(card);
+            });
+        }
+
+        function startPsDownloadSimulation() {
+            if (isDownloading) return;
+            isDownloading = true;
+            const btn = document.getElementById('psDownloadBtn');
+            const spinner = document.getElementById('psBtnSpinner');
+            const text = document.getElementById('psBtnText');
+            btn.classList.add('loading');
+            spinner.style.display = 'block';
+            let progress = 0;
+            text.innerText = `Mengunduh.. ${progress}%`;
+
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 8) + 4;
+                if (progress >= 100) {
+                    progress = 100;
+                    text.innerText = `Menyiapkan Pemasangan..`;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        window.open("https://www.mediafire.com", '_blank');
+                        btn.classList.remove('loading');
+                        spinner.style.display = 'none';
+                        text.innerText = "Download Aplikasi Resmi";
+                        isDownloading = false;
+                    }, 1200);
+                } else { text.innerText = `Mengunduh.. ${progress}%`; }
+            }, 250);
+        }
+
+        function switchView(viewId) {
+            document.querySelectorAll('.app-view').forEach(view => view.classList.remove('view-active'));
+            document.getElementById(viewId).classList.add('view-active');
+            closeSidebar();
+        }
+
+        function openSidebar() { document.getElementById('sidebarMenu').classList.add('open'); document.getElementById('sidebarOverlay').classList.add('active'); }
+        function closeSidebar() { document.getElementById('sidebarMenu').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('active'); }
+        function resetActiveNav() { document.querySelectorAll('.bottom-nav .nav-item').forEach(item => item.classList.remove('active')); }
+
+        function switchCategory(folderName, element) { resetActiveNav(); element.classList.add('active'); switchView('viewGallery'); renderCategoryGrid(folderName); }
+        function handleAppViewClick(element) { resetActiveNav(); element.classList.add('active'); switchView('viewPlayStore'); }
+        function backToGallery() { resetActiveNav(); document.getElementById('navHome').classList.add('active'); switchView('viewGallery'); renderCategoryGrid("SEMUA FOTO"); }
+
+        function openLightbox(url) {
+            const lightbox = document.getElementById('lightbox');
+            document.getElementById('lightboxImg').src = url;
+            document.getElementById('downloadBtn').href = url.split("&sz=")[0].replace("thumbnail", "uc?export=view");
+            lightbox.classList.add('active');
+        }
+        function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); }
+
+        window.onload = initLocalGallery;
+    </script>
+</body>
+</html>
