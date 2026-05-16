@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galery Angkatan 2026 - SMKN 2 Kota Serang</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            /* Latar belakang kustom pilihanmu dengan overlay gelap agar teks tetap menyala */
+            background: linear-gradient(rgba(11, 12, 16, 0.88), rgba(11, 12, 16, 0.88)), 
+                        url('https://files.catbox.moe/3fy4f1.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #c5c6c7;
+            padding-bottom: 100px;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0c10;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00f2fe;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #00f2fe;
+        }
+        
+        /* Top Navigation Bar */
+        .top-navbar {
+            position: sticky;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(11, 12, 16, 0.75);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 242, 254, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            z-index: 1500;
+        }
+        .menu-trigger {
+            background: none;
+            border: none;
+            color: #00f2fe;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+            text-shadow: 0 0 8px rgba(0, 242, 254, 0.5);
+        }
+
+        .hero-banner {
+            text-align: center;
+            padding: 40px 20px 30px 20px;
+            background: linear-gradient(180deg, rgba(0, 242, 254, 0.04) 0%, rgba(11, 12, 16, 0) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+        }
+        .hero-banner h1 {
+            font-size: 26px;
+            font-weight: 800;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(0, 242, 254, 0.65);
+            margin-bottom: 6px;
+            line-height: 1.2;
+        }
+        .hero-banner p {
+            font-size: 14px;
+            color: #66fcf1;
+            letter-spacing: 1.5px;
+            font-weight: 500;
+            text-transform: uppercase;
+            text-shadow: 0 0 8px rgba(102, 252, 241, 0.4);
+        }
+
+        /* Views Routing Master Controller */
+        .app-view {
+            display: none;
+        }
+        .app-view.view-active {
+            display: block;
+        }
+
+        /* Gallery Container Layout */
+        .gallery-container {
+            max-width: 1200px;
+            margin: 10px auto 0 auto;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+        @media (min-width: 768px) {
+            .gallery-container {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 20px;
+                padding: 24px;
+            }
+        }
+        .photo-card {
+            background: rgba(31, 40, 51, 0.4);
+            backdrop-filter: blur(4px);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            aspect-ratio: 1 / 1;
+        }
+        .photo-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 242, 254, 0.25);
+            border-color: rgba(0, 242, 254, 0.3);
+        }
+        .photo-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            background-color: #111;
+        }
+
+        /* Play Store UI Simulation Page */
+        .playstore-container {
+            max-width: 500px;
+            margin: 25px auto;
+            padding: 20px;
+            background: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .ps-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .ps-app-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            flex-shrink: 0;
+        }
+        .ps-app-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .ps-app-info h2 {
+            font-size: 19px;
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .ps-developer {
+            font-size: 13px;
+            color: #00f2fe;
+            font-weight: 500;
+        }
+        .ps-stats {
+            display: flex;
+            justify-content: space-between;
+            text-align: center;
+            padding: 15px 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 25px;
+        }
+        .ps-stat-box {
+            flex: 1;
+        }
+        .ps-stat-val {
+            font-size: 15px;
+            color: #fff;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        .ps-stat-lbl {
+            font-size: 11px;
+            color: #888;
+            margin-top: 4px;
+        }
+        
+        .ps-btn-download {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            background: #01875f;
+            color: #fff;
+            text-align: center;
+            padding: 12px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .ps-btn-download:hover {
+            background: #01996b;
+        }
+        .ps-btn-download.loading {
+            background: #1f1f1f;
+            color: #01875f;
+            border: 1px solid #333;
+            cursor: not-allowed;
+        }
+        .ps-spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #333;
+            border-top: 2px solid #01875f;
+            border-radius: 50%;
+            animation: psRotate 0.8s linear infinite;
+        }
+        @keyframes psRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Full Screen Content Wrapper */
+        .fullscreen-content-page {
+            max-width: 500px;
+            margin: 30px auto;
+            padding: 35px 24px;
+            background: rgba(17, 20, 26, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid rgba(0, 242, 254, 0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        .fs-page-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+        }
+        .fs-page-title {
+            font-size: 20px;
+            color: #fff;
+            font-weight: 800;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 12px;
+        }
+        .fs-page-body {
+            font-size: 14px;
+            color: #a4a7ab;
+            line-height: 1.7;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .fs-page-body p {
+            margin-bottom: 16px;
+        }
+        
+        /* Contact Button Grid */
+        .contact-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        .contact-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .contact-btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-wa {
+            background: #25d366;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+        }
+        .btn-email {
+            background: #ea4335;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(234, 67, 53, 0.3);
+        }
+        .fs-btn-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: transparent;
+            color: #8f9499;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid #222;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .fs-btn-action:hover {
+            color: #fff;
+            border-color: #555;
+        }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 12, 16, 0.95);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            backdrop-filter: blur(8px);
+        }
+        .lightbox.active {
+            display: flex;
+        }
+        .lightbox-content {
+            max-width: 95%;
+            max-height: 75vh;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.3);
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            object-fit: contain;
+        }
+        .lightbox-actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 15px;
+        }
+        .btn {
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #00f2fe, #4facfe);
+            color: #0b0c10;
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.4);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 242, 254, 0.6);
+        }
+        .btn-close {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .btn-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Fixed Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(31, 40, 51, 0.85);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(102, 252, 241, 0.15);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+            padding: 0 10px;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #8f9499;
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background: none;
+            border: none;
+            cursor: pointer;
+            flex: 1;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .nav-item.active, .nav-item:hover {
+            color: #00f2fe;
+            text-shadow: 0 0 8px rgba(0, 242, 254, 0.4);
+        }
+        .nav-icon {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        /* Sidebar Dynamic Drawer Styling */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -290px;
+            width: 290px;
+            height: 100%;
+            background: #0f1115;
+            border-right: 1px solid rgba(102, 252, 241, 0.15);
+            z-index: 3000;
+            transition: left 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+            padding: 25px 20px;
+            box-shadow: 5px 0 25px rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar.open {
+            left: 0;
+        }
+        .sidebar-header {
+            font-size: 11px;
+            font-weight: 800;
+            color: rgba(102, 252, 241, 0.6);
+            letter-spacing: 1.5px;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+        .sidebar-menu-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .sidebar-item {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(31, 40, 51, 0.3);
+            border: 1px solid rgba(102, 252, 241, 0.15);
+            border-radius: 10px;
+            color: #a4a7ab;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+        .sidebar-item:hover, .sidebar-item.active {
+            background: rgba(0, 242, 254, 0.04);
+            color: #00f2fe;
+            border-color: #00f2fe;
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+            text-shadow: 0 0 5px rgba(0, 242, 254, 0.4);
+        }
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(102, 252, 241, 0.1);
+            margin: 20px 0;
+        }
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 2500;
+            display: none;
+        }
+        .sidebar-overlay.active {
+            display: block;
+        }
+        /* Penempatan watermark kecil anggun di bawah sesuai seleramu */
+        .brand-watermark {
+            position: fixed;
+            bottom: 80px;
+            right: 12px;
+            font-size: 10px;
+            color: rgba(102, 252, 241, 0.35);
+            font-weight: 400;
+            letter-spacing: 1px;
+            pointer-events: none;
+            z-index: 999;
+            text-transform: lowercase;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-navbar">
+        <button class="menu-trigger" onclick="openSidebar()">☰</button>
+    </div>
+
+    <div class="hero-banner">
+        <h1 id="gallery-title">GALERY ANGKATAN</h1>
+        <p id="gallery-subtitle">SMKN 2 KOTA SERANG 2026</p>
+    </div>
+
+    <div id="viewGallery" class="app-view view-active">
+        <div class="gallery-container" id="galleryGrid"></div>
+    </div>
+
+    <div id="viewPlayStore" class="app-view">
+        <div class="playstore-container">
+            <div class="ps-header">
+                <div class="ps-app-icon">
+                    <img src="https://files.catbox.moe/ca55nj.png" alt="Ino App Logo">
+                </div>
+                <div class="ps-app-info">
+                    <h2>Ino Ubot Gallery</h2>
+                    <div class="ps-developer">Ino.digital</div>
+                </div>
+            </div>
+            <div class="ps-stats">
+                <div class="ps-stat-box" style="border-right: 1px solid rgba(255,255,255,0.05);">
+                    <div class="ps-stat-val">4.9 ★</div>
+                    <div class="ps-stat-lbl">124 Ulasan</div>
+                </div>
+                <div class="ps-stat-box" style="border-right: 1px solid rgba(255,255,255,0.05);">
+                    <div class="ps-stat-val">4.8 MB</div>
+                    <div class="ps-stat-lbl">Ukuran File</div>
+                </div>
+                <div class="ps-stat-box">
+                    <div class="ps-stat-val">1K+</div>
+                    <div class="ps-stat-lbl">Download</div>
+                </div>
+            </div>
+            <button id="psDownloadBtn" class="ps-btn-download" onclick="startPsDownloadSimulation()">
+                <div class="ps-spinner" id="psBtnSpinner"></div>
+                <span id="psBtnText">Download Aplikasi Resmi</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="viewAbout" class="app-view">
+        <div class="fullscreen-content-page">
+            <div class="fs-page-icon">📱</div>
+            <div class="fs-page-title">Tentang Aplikasi</div>
+            <div class="fs-page-body">
+                <p><strong>Aplikasi ini dibuat untuk tersimpan abadi di ponsel kalian.</strong></p>
+                <p>Setiap lembar foto, tawa, dan cerita yang terukir selama masa sekolah tersimpan rapat di sini. Waktu boleh terus berjalan dan kita akan melangkah ke jalan masing-masing, namun memori di tempat ini tidak akan pernah pudar.</p>
+                <p>Gunakan aplikasi galeri kustom persembahan dari <strong>Ino.digital</strong> ini untuk membuka kembali gerbang masa lalu kapan pun kalian merindukan masa-masa abu-abu putih di SMKN 2 Kota Serang.</p>
+            </div>
+            <button class="fs-btn-action" onclick="backToGallery()">Kembali Ke Galeri</button>
+        </div>
+    </div>
+
+    <div id="viewContact" class="app-view">
+        <div class="fullscreen-content-page">
+            <div class="fs-page-icon">💬</div>
+            <div class="fs-page-title">Hubungi Developer</div>
+            <div class="fs-page-body" style="text-align: center; margin-bottom: 20px;">
+                <p>Mau buat website portofolio kelas, sistem voucher, atau aplikasi kustom kelas eksklusif milikmu sendiri bersama brand <strong>Ino.digital</strong>?</p>
+                <p>Silakan klik salah satu opsi di bawah untuk terhubung langsung:</p>
+            </div>
+            <div class="contact-grid">
+                <a href="https://t.me/manajerIno" target="_blank" class="contact-btn btn-wa">Chat WhatsApp / Telegram</a>
+                <a href="mailto:admin@ino.digital" class="contact-btn btn-email">Kirim Email Resmi</a>
+            </div>
+            <button class="fs-btn-action" onclick="backToGallery()">Kembali Ke Galeri</button>
+        </div>
+    </div>
+
+    <div class="lightbox" id="lightbox">
+        <img src="" alt="Preview" class="lightbox-content" id="lightboxImg">
+        <div class="lightbox-actions">
+            <button class="btn btn-close" onclick="closeLightbox()">Kembali</button>
+            <a href="#" class="btn btn-primary" id="downloadBtn" download target="_blank">Unduh Foto</a>
+        </div>
+    </div>
+
+    <div class="sidebar" id="sidebarMenu">
+        <div class="sidebar-top" style="overflow-y: auto; flex-grow: 1;">
+            <div class="sidebar-header">Daftar Katalog Album</div>
+            <div class="sidebar-menu-list" id="sidebarList"></div>
+            
+            <div class="sidebar-divider"></div>
+            
+            <div class="sidebar-header">Informasi Aplikasi</div>
+            <div class="sidebar-menu-list">
+                <button class="sidebar-item" onclick="switchView('viewAbout')">Tentang Aplikasi</button>
+                <button class="sidebar-item" onclick="switchView('viewContact')">Hubungi Developer</button>
+            </div>
+        </div>
+    </div>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <div class="brand-watermark">ino.digital</div>
+
+    <div class="bottom-nav">
+        <button class="nav-item active" id="navHome" onclick="handleBottomNavClick('SEMUA FOTO', this)">
+            <div class="nav-icon">✨</div>
+            <span>Semua</span>
+        </button>
+        <button class="nav-item" id="navAngkatan" onclick="handleBottomNavClick('FOTO ANGKATAN', this)">
+            <div class="nav-icon">👥</div>
+            <span>Angkatan</span>
+        </button>
+        <button class="nav-item" onclick="openSidebar()">
+            <div class="nav-icon">📁</div>
+            <span>Folder</span>
+        </button>
+        <button class="nav-item" id="navApp" onclick="handleAppViewClick(this)">
+            <div class="nav-icon">🤖</div>
+            <span>Aplikasi</span>
+        </button>
+    </div>
+
+    <script>
+        const MEDIAFIRE_DOWNLOAD_URL = "https://www.mediafire.com"; 
+        
+        // ==========================================
+        // 🛠️ MASUKKAN ID FOTO ASLI DRIVE DI SINI
+        // ==========================================
+        const DATA_FOTO_ASLI = [
+            { id: "1-07q1kKjHwK6_M0wI869m16C5Qp3F_N6", kategori: "FOTO 6D" },
+            { id: "1-1EwW3A9p2M9yO0-S6bF2wG9A7C5_B1X", kategori: "FOTO DRONE" },
+            { id: "1-2gH4A3pX9yK0wD-m6aF9wG2C5_X8K1N", kategori: "FOTO ANGKATAN" }
+        ];
+
+        let subFolders = {};
+        let isDownloading = false;
+        const galleryGrid = document.getElementById('galleryGrid');
+        const sidebarMenu = document.getElementById('sidebarMenu');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const sidebarList = document.getElementById('sidebarList');
+
+        function initGalleryData() {
+            subFolders["SEMUA FOTO"] = [];
+            
+            DATA_FOTO_ASLI.forEach(item => {
+                const directUrl = `https://drive.google.com/thumbnail?id=${item.id}&sz=w1000`;
+                subFolders["SEMUA FOTO"].push(directUrl);
+                
+                if (!subFolders[item.kategori]) {
+                    subFolders[item.kategori] = [];
+                }
+                subFolders[item.kategori].push(directUrl);
+            });
+
+            buildSidebarMenu();
+            renderCategory("SEMUA FOTO");
+        }
+
+        function startPsDownloadSimulation() {
+            if (isDownloading) return;
+            isDownloading = true;
+
+            const btn = document.getElementById('psDownloadBtn');
+            const spinner = document.getElementById('psBtnSpinner');
+            const text = document.getElementById('psBtnText');
+
+            btn.classList.add('loading');
+            spinner.style.display = 'block';
+            
+            let progress = 0;
+            text.innerText = `Mengunduh.. ${progress}%`;
+
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 8) + 4;
+                if (progress >= 100) {
+                    progress = 100;
+                    text.innerText = `Menyiapkan Pemasangan..`;
+                    clearInterval(interval);
+                    
+                    setTimeout(() => {
+                        window.open(MEDIAFIRE_DOWNLOAD_URL, '_blank');
+                        btn.classList.remove('loading');
+                        spinner.style.display = 'none';
+                        text.innerText = "Download Aplikasi Resmi";
+                        isDownloading = false;
+                    }, 1200);
+                } else {
+                    text.innerText = `Mengunduh.. ${progress}%`;
+                }
+            }, 250);
+        }
+
+        function buildSidebarMenu() {
+            sidebarList.innerHTML = '';
+            Object.keys(subFolders).forEach(folderName => {
+                if (subFolders[folderName].length === 0) return;
+                const btn = document.createElement('button');
+                btn.className = "sidebar-item";
+                btn.innerHTML = `<span>${folderName}</span>`;
+                btn.onclick = () => {
+                    resetActiveNav();
+                    if(folderName === "SEMUA FOTO") document.getElementById('navHome').classList.add('active');
+                    else if(folderName === "FOTO ANGKATAN") document.getElementById('navAngkatan').classList.add('active');
+                    switchView('viewGallery');
+                    renderCategory(folderName);
+                };
+                sidebarList.appendChild(btn);
+            });
+        }
+
+        function switchView(viewId) {
+            document.querySelectorAll('.app-view').forEach(view => view.classList.remove('view-active'));
+            document.getElementById(viewId).classList.add('view-active');
+            closeSidebar();
+        }
+
+        function renderCategory(folderName) {
+            galleryGrid.innerHTML = '';
+            const photos = subFolders[folderName] || [];
+            photos.forEach(url => {
+                const card = document.createElement('div');
+                card.className = 'photo-card';
+                card.onclick = () => openLightbox(url);
+                card.innerHTML = `<img src="${url}" alt="Album" loading="lazy">`;
+                galleryGrid.appendChild(card);
+            });
+        }
+
+        function openSidebar() {
+            sidebarMenu.classList.add('open');
+            sidebarOverlay.classList.add('active');
+        }
+        function closeSidebar() {
+            sidebarMenu.classList.remove('open');
+            sidebarOverlay.classList.remove('active');
+        }
+
+        function resetActiveNav() {
+            document.querySelectorAll('.bottom-nav .nav-item').forEach(item => item.classList.remove('active'));
+        }
+
+        function handleBottomNavClick(folderName, element) {
+            resetActiveNav();
+            element.classList.add('active');
+            switchView('viewGallery');
+            renderCategory(folderName);
+        }
+
+        function handleAppViewClick(element) {
+            resetActiveNav();
+            element.classList.add('active');
+            switchView('viewPlayStore');
+        }
+
+        function backToGallery() {
+            resetActiveNav();
+            document.getElementById('navHome').classList.add('active');
+            switchView('viewGallery');
+            renderCategory("SEMUA FOTO");
+        }
+
+        function openLightbox(url) {
+            const lightbox = document.getElementById('lightbox');
+            document.getElementById('lightboxImg').src = url;
+            document.getElementById('downloadBtn').href = url.split("&sz=")[0];
+            lightbox.classList.add('active');
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+
+        window.onload = initGalleryData;
+    </script>
+</body>
+</html>
