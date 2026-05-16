@@ -421,7 +421,7 @@
         <img src="" alt="Preview" class="lightbox-content" id="lightboxImg">
         <div class="lightbox-actions">
             <button class="btn btn-close" onclick="closeLightbox()">Kembali</button>
-            <a href="#" class="btn btn-primary" id="downloadBtn" download target="_blank">Unduh Foto</a>
+            <a href="#" class="btn btn-primary" id="downloadBtn" download>Unduh Foto</a>
         </div>
     </div>
 
@@ -462,7 +462,7 @@
 
     <script>
         // ===================================================================
-        // 📥 SELURUH DATA ID FOTO 6D ASLI SUDAH TERTANAM SEMPURNA DI SINI
+        // 📥 SELURUH DATA ID FOTO 6D UTUH DARI SNAPSHOT KAMU
         // ===================================================================
         const DATA_FOTO_ANGKATAN = [
           { "id": "1X8AFVGfwmNGh6HrRiJeqiwjK_yCRAUzQ", "kategori": "FOTO 6D" },
@@ -751,10 +751,11 @@
         function handleAppViewClick(element) { resetActiveNav(); element.classList.add('active'); switchView('viewPlayStore'); }
         function backToGallery() { resetActiveNav(); document.getElementById('navHome').classList.add('active'); switchView('viewGallery'); renderCategoryGrid("SEMUA FOTO"); }
 
+        // 🔥 LOGIKA BARU: Ganti target link ke /uc?export=download agar murni direct stream tanpa dialihkan ke Google Drive lagi!
         function openLightbox(url) {
             const lightbox = document.getElementById('lightbox');
             document.getElementById('lightboxImg').src = url;
-            document.getElementById('downloadBtn').href = url.split("&sz=")[0].replace("thumbnail", "uc?export=view");
+            document.getElementById('downloadBtn').href = url.split("&sz=")[0].replace("thumbnail", "uc?export=download");
             lightbox.classList.add('active');
         }
         function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); }
